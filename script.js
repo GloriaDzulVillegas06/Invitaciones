@@ -5,6 +5,7 @@ const WEDDING_CONFIG = Object.freeze({
   venue: "Quinta Buenaventura",
   mapsUrl: "https://maps.app.goo.gl/AAP9WkP97H6DwkRz6",
   googleScriptUrl: "https://script.google.com/macros/s/AKfycbxSY-EgzxiYVFsK0Sh8FIC3Oga7PJqOiaAA13k0mMAiC0N6f4DSG9wbDCZfUoZZmcQbgg/exec",
+  musicVideoId: "tlGsEeS4PTc",
   developmentMode: true
 });
 
@@ -236,11 +237,46 @@ const DEVELOPMENT_INVITATION = Object.freeze({ codigo: "TEST", invitado: "Invita
     items.forEach(item => observer.observe(item));
   }
 
+  function initializeMusic() {
+    const button = document.querySelector("#music-toggle");
+    const label = document.querySelector("#music-label");
+    const playerContainer = document.querySelector("#music-player");
+    const videoId = WEDDING_CONFIG.musicVideoId;
+    let player = null;
+    let isPlaying = false;
+
+    function sendPlayerCommand(command) {
+      player?.contentWindow?.postMessage(JSON.stringify({ event: "command", func: command, args: [] }), "*");
+    }
+
+    function updateButton() {
+      button.classList.toggle("playing", isPlaying);
+      button.setAttribute("aria-pressed", String(isPlaying));
+      button.setAttribute("aria-label", isPlaying ? "Pausar música de fondo" : "Reproducir música de fondo");
+      label.textContent = isPlaying ? "Pausar música" : "Reproducir música";
+    }
+
+    button.addEventListener("click", () => {
+      if (!player) {
+        player = document.createElement("iframe");
+        player.title = "Música de fondo";
+        player.allow = "autoplay; encrypted-media";
+        player.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&loop=1&playlist=${encodeURIComponent(videoId)}&controls=0&enablejsapi=1`;
+        playerContainer.append(player);
+        isPlaying = true;
+      } else {
+        isPlaying = !isPlaying;
+        sendPlayerCommand(isPlaying ? "playVideo" : "pauseVideo");
+      }
+      updateButton();
+    });
+  }
+
   elements.attendanceButtons.forEach(button => button.addEventListener("click", () => selectAttendance(button.dataset.attendance)));
   elements.decrease.addEventListener("click", () => { state.people -= 1; updatePeople(); }); elements.increase.addEventListener("click", () => { state.people += 1; updatePeople(); });
   elements.message.addEventListener("input", () => { elements.messageCount.textContent = `${elements.message.value.length} / ${MAX_MESSAGE_LENGTH}`; });
   elements.form.addEventListener("submit", handleSubmit);
   elements.modify.addEventListener("click", () => { const saved = readSavedResponse(); if (saved) { selectAttendance(saved.asistencia === "Sí" ? "si" : "no"); state.people = saved.numeroPersonas || 1; updatePeople(); } showForm(); });
 
-  initializeCountdown(); initializeMaps(); initializeAnimations(); initializeInvitation();
+  initializeCountdown(); initializeMaps(); initializeAnimations(); initializeMusic(); initializeInvitation();
 })();
