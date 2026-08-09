@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0B1F3A">
+  <meta name="description" content="Confirmación de asistencia a la boda de Gloria y Jessica.">
+  <meta property="og:title" content="Gloria &amp; Jessica | Nuestra boda">
+  <meta property="og:description" content="Confirmación de asistencia a la boda de Gloria y Jessica.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/og-image.jpg">
+  <title>Gloria &amp; Jessica | Nuestra boda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&amp;family=Montserrat:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Ir al contenido</a>
+  <header class="hero" aria-labelledby="hero-title">
+    <div class="navy-sparkles" aria-hidden="true">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+    <div class="botanical botanical-left" aria-hidden="true"></div>
+    <div class="botanical botanical-right" aria-hidden="true"></div>
+    <div class="hero-content">
+      <p class="eyebrow hero-reveal">Nos casamos</p>
+      <h1 id="hero-title" class="hero-reveal"><span>Gloria</span><b>&amp;</b><span>Jessica</span></h1>
+      <p class="date hero-reveal">19 · Diciembre · 2026</p>
+      <blockquote class="hero-reveal">“El mejor lugar del mundo es donde podamos estar juntas.”</blockquote>
+    </div>
+    <a class="scroll-cue" href="#contenido" aria-label="Continuar hacia el contenido"><span></span></a>
+  </header>
+
+  <main id="contenido">
+    <section class="welcome light-section reveal" aria-labelledby="welcome-title">
+      <p class="flourish" aria-hidden="true">— ✦ —</p>
+      <h2 id="welcome-title">Hay momentos que duran un instante y recuerdos que duran toda la vida.</h2>
+      <p>Queremos compartir este día tan especial contigo.</p>
+    </section>
+
+    <section class="countdown-section navy-section reveal" aria-labelledby="countdown-title">
+      <div class="navy-sparkles" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <div class="navy-content">
+        <p class="eyebrow">Falta muy poco</p>
+        <h2 id="countdown-title">Para nuestro gran día</h2>
+        <div id="countdown" class="countdown" role="timer" aria-live="off">
+          <div><strong id="days">000</strong><span>Días</span></div>
+          <div><strong id="hours">00</strong><span>Horas</span></div>
+          <div><strong id="minutes">00</strong><span>Min</span></div>
+          <div><strong id="seconds">00</strong><span>Seg</span></div>
+        </div>
+        <p id="wedding-day-message" class="wedding-day-message" hidden>¡Hoy es el gran día!</p>
+      </div>
+    </section>
+
+    <section class="ceremony light-section reveal" aria-labelledby="ceremony-title">
+      <div class="section-ornament" aria-hidden="true">✦</div>
+      <p class="eyebrow">Acompáñanos</p>
+      <h2 id="ceremony-title">Ceremonia</h2>
+      <div class="ceremony-details">
+        <p class="ceremony-date">19 de diciembre de 2026</p>
+        <p><strong>7:00 p. m.</strong></p>
+        <div class="separator" aria-hidden="true"></div>
+        <h3>Quinta Buenaventura</h3>
+      </div>
+      <a id="maps-button" class="button button-primary" href="#" rel="noopener noreferrer" aria-disabled="true">Ver ubicación</a>
+      <p id="maps-note" class="small-note">La ubicación estará disponible próximamente.</p>
+    </section>
+
+    <section id="rsvp" class="rsvp-section reveal" aria-labelledby="rsvp-title">
+      <div class="rsvp-heading">
+        <p class="eyebrow">Reserva la fecha</p>
+        <h2 id="rsvp-title">Confirma tu asistencia</h2>
+        <p>Nos encantará compartir este día contigo. Ayúdanos confirmando tu asistencia.</p>
+      </div>
+
+      <div class="rsvp-card">
+        <div id="invitation-state"></div>
+
+        <form id="rsvp-form" novalidate hidden>
+          <div id="response-fields" hidden>
+            <fieldset class="field attendance-field">
+              <legend>¿Nos acompañas?</legend>
+              <div class="choice-grid">
+                <button class="choice-button" type="button" data-attendance="si" aria-pressed="false"><span aria-hidden="true">✓</span>Sí, ahí estaré</button>
+                <button class="choice-button" type="button" data-attendance="no" aria-pressed="false"><span aria-hidden="true">—</span>No podré acompañarlas</button>
+              </div>
+              <p class="field-error" id="attendance-error"></p>
+            </fieldset>
+
+            <div id="people-field" class="field people-field" hidden>
+              <label>¿Cuántas personas asistirán?</label>
+              <p id="seats-hint" class="field-hint"></p>
+              <div class="stepper" role="group" aria-label="Número de personas">
+                <button id="decrease-people" type="button" aria-label="Disminuir personas">−</button>
+                <output id="people-count" aria-live="polite">1</output>
+                <button id="increase-people" type="button" aria-label="Aumentar personas">+</button>
+              </div>
+              <p class="field-error" id="people-error"></p>
+            </div>
+
+            <div class="field">
+              <div class="label-row"><label for="message">Déjanos un mensaje <span>(opcional)</span></label><span id="message-count">0 / 300</span></div>
+              <textarea id="message" name="message" rows="5" maxlength="300" placeholder="Escribe algo bonito si quieres…"></textarea>
+              <p class="field-error" id="message-error"></p>
+            </div>
+            <p id="submit-error" class="submit-error" role="alert"></p>
+            <button id="submit-button" class="button button-primary button-full" type="submit">Confirmar asistencia</button>
+          </div>
+        </form>
+
+        <div id="success-state" class="success-state" hidden aria-live="polite">
+          <div class="sparkles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+          <p class="flourish" aria-hidden="true">✦</p>
+          <h3 id="success-title"></h3>
+          <p id="success-message"></p>
+          <p id="success-detail" class="success-detail"></p>
+        </div>
+
+        <div id="saved-state" class="saved-state" hidden>
+          <p class="flourish" aria-hidden="true">✦</p>
+          <h3>Ya registramos tu respuesta.</h3>
+          <dl><div><dt>Asistencia</dt><dd id="saved-attendance"></dd></div><div id="saved-people-row"><dt>Personas</dt><dd id="saved-people"></dd></div></dl>
+          <button id="modify-response" class="button button-secondary" type="button">Modificar mi respuesta</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="navy-sparkles" aria-hidden="true">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+    <div class="navy-content">
+      <p class="footer-names">Gloria <span>&amp;</span> Jessica</p>
+      <p>19 · 12 · 2026</p>
+      <div class="footer-line" aria-hidden="true"></div>
+      <p class="footer-love">Hecho con mucho amor</p>
+      <!-- <p class="footer-copyright">© 2026 Gloria Dzul Villegas</p> -->
+    </div>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>
