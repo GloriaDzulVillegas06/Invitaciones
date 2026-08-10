@@ -5,7 +5,7 @@ const WEDDING_CONFIG = Object.freeze({
   venue: "Quinta Buenaventura",
   mapsUrl: "https://maps.app.goo.gl/AAP9WkP97H6DwkRz6",
   googleScriptUrl: "https://script.google.com/macros/s/AKfycbxSY-EgzxiYVFsK0Sh8FIC3Oga7PJqOiaAA13k0mMAiC0N6f4DSG9wbDCZfUoZZmcQbgg/exec",
-  musicVideoId: "tlGsEeS4PTc",
+  musicFile: "assets/DosOruguitas.mp3",
   developmentMode: true
 });
 
@@ -21,7 +21,7 @@ const DEVELOPMENT_INVITATION = Object.freeze({ codigo: "TEST", invitado: "Invita
 (() => {
   "use strict";
 
-  const state = { invitation: null, attendance: null, people: 1, isTest: false };
+  const state = { invitation: null, attendance: null, people: 1, isTest: false, officialResponse: null };
   const elements = {
     form: document.querySelector("#rsvp-form"), invitationState: document.querySelector("#invitation-state"),
     responseFields: document.querySelector("#response-fields"),
@@ -36,6 +36,13 @@ const DEVELOPMENT_INVITATION = Object.freeze({ codigo: "TEST", invitado: "Invita
   };
 
   function normalizeCode(value) { return value.trim().toUpperCase().replace(/[^A-Z0-9_-]/g, "").slice(0, 24); }
+  function normalizeInvitationStatus(value) {
+    const normalized = String(value || "").trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    if (normalized === "pendiente") return "Pendiente";
+    if (normalized === "confirmado") return "Confirmado";
+    if (normalized === "no asistira") return "No asistirá";
+    return null;
+  }
   function pluralizedSeats(seats) { return seats === 1 ? "Tenemos reservado 1 lugar para ti." : `Tenemos reservados ${seats} lugares para ustedes.`; }
   function storageKey() { return `boda-rsvp-${state.invitation?.codigo || "prueba"}`; }
   function clearElement(element) { while (element.firstChild) element.removeChild(element.firstChild); }
@@ -101,8 +108,10 @@ const DEVELOPMENT_INVITATION = Object.freeze({ codigo: "TEST", invitado: "Invita
         return;
       }
       const seats = Number(result?.lugares);
-      if (result?.ok !== true || normalizeCode(String(result.codigo || "")) !== code || typeof result.invitado !== "string" || !result.invitado.trim() || !Number.isInteger(seats) || seats < 1) throw new Error("Respuesta de invitación inválida");
-      activateInvitation({ codigo: code, nombre: result.invitado, lugares: seats });
+      const status = normalizeInvitationStatus(result?.estado);
+      const attendees = Number(result?.asistentes);
+      if (result?.ok !== true || normalizeCode(String(result.codigo || "")) !== code || typeof result.invitado !== "string" || !result.invitado.trim() || !Number.isInteger(seats) || seats < 1 || !status || !Number.isInteger(attendees) || attendees < 0) throw new Error("Respuesta de invitación inválida");
+      activateInvitation({ codigo: code, nombre: result.invitado, lugares: seats, estado: status, asistentes: attendees });
     } catch (error) {
       console.error("No se pudo consultar la invitación:", error);
       renderConnectionError(code);
@@ -126,10 +135,21 @@ const DEVELOPMENT_INVITATION = Object.freeze({ codigo: "TEST", invitado: "Invita
 
   function activateInvitation(invitation, isTest = false) {
     state.invitation = { codigo: invitation.codigo, nombre: invitation.nombre.trim(), lugares: Number(invitation.lugares) };
-    state.isTest = isTest; state.people = 1;
+    state.isTest = isTest; state.people = 1; state.attendance = null;
+    state.officialResponse = isTest ? null : { estado: invitation.estado, asistentes: Number(invitation.asistentes) };
     renderInvitation(state.invitation); elements.form.hidden = false;
-    const saved = readSavedResponse();
-    if (saved) showSavedResponse(saved); else showForm();
+    if (isTest) {
+      const saved = readSavedResponse();
+      if (saved) showSavedResponse(saved); else showForm();
+    } else if (state.officialResponse.estado === "Pendiente") {
+      clearSavedResponse();
+      showForm();
+    } else {
+      showSavedResponse({
+        asistencia: state.officialResponse.estado === "Confirmado" ? "Sí" : "No",
+        numeroPersonas: state.officialResponse.asistentes
+      });
+    }
   }
 
   function showForm() {
@@ -203,6 +223,10 @@ const DEVELOPMENT_INVITATION = Object.freeze({ codigo: "TEST", invitado: "Invita
     try { const value = localStorage.getItem(storageKey()); if (!value) return null; const parsed = JSON.parse(value); return parsed.codigo === state.invitation.codigo ? parsed : null; }
     catch (error) { console.warn("No fue posible leer la respuesta local.", error); return null; }
   }
+  function clearSavedResponse() {
+    try { localStorage.removeItem(storageKey()); }
+    catch (error) { console.warn("No fue posible eliminar la respuesta local anterior.", error); }
+  }
   function showSuccess(payload) {
     elements.form.hidden = true; elements.successState.hidden = false;
     if (payload.asistencia === "Sí") { elements.successTitle.textContent = "¡Nos hará muy felices verte!"; elements.successMessage.textContent = "Gracias por acompañarnos en este día tan especial."; elements.successDetail.textContent = `Confirmaste ${payload.numeroPersonas} ${payload.numeroPersonas === 1 ? "persona" : "personas"}.`; }
@@ -241,13 +265,9 @@ const DEVELOPMENT_INVITATION = Object.freeze({ codigo: "TEST", invitado: "Invita
     const button = document.querySelector("#music-toggle");
     const label = document.querySelector("#music-label");
     const playerContainer = document.querySelector("#music-player");
-    const videoId = WEDDING_CONFIG.musicVideoId;
+    const musicFile = WEDDING_CONFIG.musicFile;
     let player = null;
     let isPlaying = false;
-
-    function sendPlayerCommand(command) {
-      player?.contentWindow?.postMessage(JSON.stringify({ event: "command", func: command, args: [] }), "*");
-    }
 
     function updateButton() {
       button.classList.toggle("playing", isPlaying);
@@ -256,19 +276,21 @@ const DEVELOPMENT_INVITATION = Object.freeze({ codigo: "TEST", invitado: "Invita
       label.textContent = isPlaying ? "Pausar música" : "Reproducir música";
     }
 
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
       if (!player) {
-        player = document.createElement("iframe");
-        player.title = "Música de fondo";
-        player.allow = "autoplay; encrypted-media";
-        player.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&loop=1&playlist=${encodeURIComponent(videoId)}&controls=0&enablejsapi=1`;
+        player = document.createElement("audio");
+        player.src = musicFile;
+        player.loop = true;
+        player.preload = "none";
         playerContainer.append(player);
-        isPlaying = true;
-      } else {
-        isPlaying = !isPlaying;
-        sendPlayerCommand(isPlaying ? "playVideo" : "pauseVideo");
       }
-      updateButton();
+      try {
+        if (player.paused) await player.play(); else player.pause();
+        isPlaying = !player.paused;
+        updateButton();
+      } catch (error) {
+        console.error("No se pudo reproducir la música:", error);
+      }
     });
   }
 
@@ -276,7 +298,13 @@ const DEVELOPMENT_INVITATION = Object.freeze({ codigo: "TEST", invitado: "Invita
   elements.decrease.addEventListener("click", () => { state.people -= 1; updatePeople(); }); elements.increase.addEventListener("click", () => { state.people += 1; updatePeople(); });
   elements.message.addEventListener("input", () => { elements.messageCount.textContent = `${elements.message.value.length} / ${MAX_MESSAGE_LENGTH}`; });
   elements.form.addEventListener("submit", handleSubmit);
-  elements.modify.addEventListener("click", () => { const saved = readSavedResponse(); if (saved) { selectAttendance(saved.asistencia === "Sí" ? "si" : "no"); state.people = saved.numeroPersonas || 1; updatePeople(); } showForm(); });
+  elements.modify.addEventListener("click", () => {
+    const response = state.officialResponse
+      ? { asistencia: state.officialResponse.estado === "Confirmado" ? "Sí" : "No", numeroPersonas: state.officialResponse.asistentes }
+      : readSavedResponse();
+    if (response) { selectAttendance(response.asistencia === "Sí" ? "si" : "no"); state.people = response.numeroPersonas || 1; updatePeople(); }
+    showForm();
+  });
 
   initializeCountdown(); initializeMaps(); initializeAnimations(); initializeMusic(); initializeInvitation();
 })();
