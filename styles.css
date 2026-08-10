@@ -3,8 +3,8 @@
   --navy-dark: #071426;
   --navy-light: #183A5A;
   --champagne: #C9A96E;
-  --ivory: #F8F5EF;
-  --warm-white: #FFFDF9;
+  --ivory: #E9DCC5;
+  --warm-white: #F1E7D5;
   --blue-gray: #667788;
   --danger: #9b3f3f;
   --serif: "Cormorant Garamond", Georgia, serif;
@@ -84,7 +84,7 @@ section { padding: 5.5rem 1.5rem; }
 .access-message .button { margin-top: 1rem; }
 .test-fields { padding-bottom: .5rem; }.test-badge { display: inline-block; margin: 0 0 1.4rem; padding: .3rem .7rem; color: var(--champagne); border: 1px solid var(--champagne); font-size: .62rem; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; }
 .field { margin: 0 0 1.7rem; }.field label, fieldset legend { display: block; margin-bottom: .65rem; font-weight: 600; }.field label span { color: var(--blue-gray); font-size: .8rem; font-weight: 400; }
-input, textarea { width: 100%; padding: .9rem 1rem; color: var(--navy); border: 1px solid rgba(102,119,136,.4); border-radius: 2px; background: #fff; transition: border .2s, box-shadow .2s; }
+input, textarea { width: 100%; padding: .9rem 1rem; color: var(--navy); border: 1px solid rgba(102,119,136,.4); border-radius: 2px; background: #F8F1E4; transition: border .2s, box-shadow .2s; }
 textarea { resize: vertical; min-height: 8rem; } input:focus, textarea:focus { border-color: var(--champagne); box-shadow: 0 0 0 3px rgba(201,169,110,.15); outline: none; }
 fieldset { padding: 0; border: 0; }.choice-grid { display: grid; gap: .75rem; }.choice-button { min-height: 64px; padding: .8rem; color: var(--navy); border: 1px solid rgba(11,31,58,.25); background: transparent; cursor: pointer; font-size: .85rem; transition: all .2s; }.choice-button span { margin-right: .5rem; color: var(--champagne); }.choice-button:hover { border-color: var(--champagne); }.choice-button.selected { color: var(--warm-white); border-color: var(--champagne); background: var(--navy); }
 .field-hint { margin: -.4rem 0 1rem; color: var(--blue-gray); font-size: .8rem; }.stepper { display: inline-grid; grid-template-columns: 52px 70px 52px; overflow: hidden; border: 1px solid rgba(11,31,58,.25); }.stepper button { min-height: 52px; color: var(--navy); border: 0; background: var(--ivory); cursor: pointer; font-size: 1.5rem; }.stepper button:disabled { color: #aab1b8; cursor: not-allowed; }.stepper output { display: grid; place-items: center; font-size: 1.1rem; font-weight: 600; }
