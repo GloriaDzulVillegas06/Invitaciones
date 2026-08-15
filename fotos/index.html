@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0B1F3A">
+  <meta name="description" content="Comparte tus fotos de la boda de Gloria y Jessica.">
+  <title>Comparte tus fotos | Gloria &amp; Jessica</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&amp;family=Montserrat:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+    <header class="photo-hero">
+      <div class="stars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="hero-content">
+        <p class="names">Gloria <span>&amp;</span> Jessica</p>
+        <p class="date">19 · 12 · 2026</p>
+        <div class="ornament" aria-hidden="true"><span></span><b>♡</b><span></span></div>
+        <p class="eyebrow">Nuestro álbum compartido</p>
+        <h1>Captura el momento</h1>
+        <p class="hero-lead">Esta noche también queremos verla a través de tus ojos.</p>
+        <p>Comparte con nosotras esas fotos espontáneas, risas, abrazos y momentos que quizá nosotras no alcanzamos a ver.</p>
+      </div>
+    </header>
+
+    <section class="upload-section" aria-labelledby="upload-title">
+      <div id="upload-card" class="upload-card">
+        <div id="selection-view">
+          <p class="eyebrow">Comparte tus recuerdos</p>
+          <h2 id="upload-title">Tus fotos también cuentan nuestra historia</h2>
+
+          <div class="field">
+            <label for="guest-name">¿Quién nos comparte estos recuerdos?</label>
+            <input id="guest-name" type="text" maxlength="80" autocomplete="name" placeholder="Tu nombre (opcional)">
+          </div>
+
+          <label id="picker" class="photo-picker" for="photo-input">
+            <input id="photo-input" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" multiple>
+            <span class="picker-icon" aria-hidden="true">＋</span>
+            <strong>Seleccionar fotos</strong>
+            <span>Puedes compartir todos los recuerdos que quieras ♡</span>
+            <small>Selecciona hasta 15 fotos por vez y vuelve a subir todas las veces que quieras.</small>
+          </label>
+
+          <div id="selection-message" class="message" role="status" aria-live="polite"></div>
+
+          <div id="preview-section" hidden>
+            <div class="preview-heading">
+              <h3 id="selected-count">0 fotos seleccionadas</h3>
+              <button id="clear-all" class="text-button" type="button">Quitar todas</button>
+            </div>
+            <div id="preview-grid" class="preview-grid"></div>
+            <button id="upload-button" class="button button-primary" type="button" disabled>Subir nuestros recuerdos</button>
+          </div>
+        </div>
+
+        <div id="progress-view" class="state-view" hidden aria-live="polite">
+          <div class="heart-mark" aria-hidden="true">♡</div>
+          <h2>Guardando recuerdos... ♡</h2>
+          <p id="progress-file">Preparando tus fotografías</p>
+          <div class="progress-track" role="progressbar" aria-label="Progreso de carga" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <span id="progress-bar"></span>
+          </div>
+          <strong id="progress-count">0 de 0</strong>
+        </div>
+
+        <div id="result-view" class="state-view" hidden aria-live="polite">
+          <div class="heart-mark" aria-hidden="true">♡</div>
+          <h2 id="result-title"></h2>
+          <p id="result-message"></p>
+          <p id="result-signature" class="signature"></p>
+          <div id="result-summary" class="result-summary"></div>
+          <div id="failed-list" class="failed-list"></div>
+          <div class="result-actions">
+            <button id="retry-button" class="button button-primary" type="button" hidden></button>
+            <button id="more-button" class="button button-secondary" type="button">Subir más fotos</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer><p>Gloria <span>&amp;</span> Jessica</p><small>Gracias por guardar con nosotras estos recuerdos</small></footer>
+  <script src="script.js"></script>
+</body>
+</html>
