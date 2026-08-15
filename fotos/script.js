@@ -134,7 +134,11 @@ const MAX_ORIGINAL_FILE_SIZE = PHOTO_CONFIG.maxOriginalFileSize;
       return { ok: true };
     }
     if (!PHOTO_CONFIG.googleScriptUrl || PHOTO_CONFIG.googleScriptUrl === "PEGAR_AQUI_URL_APPS_SCRIPT_FOTOS") throw new Error("El servicio de fotografías aún no está configurado");
-    const payload = { accion: "subirFoto", nombre: guestName, archivo: { nombre: photo.file.name, tipo: blob.type || "image/jpeg", base64: await blobToBase64(blob) } };
+    const payload = {
+      nombre: guestName,
+      image: await blobToBase64(blob),
+      mimeType: blob.type || "image/jpeg"
+    };
     const response = await fetch(PHOTO_CONFIG.googleScriptUrl, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) });
     if (!response.ok) throw new Error(`Error de conexión (${response.status})`);
     const result = await response.json();
