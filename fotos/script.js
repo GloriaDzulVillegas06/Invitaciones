@@ -4,7 +4,7 @@ const PHOTO_CONFIG = Object.freeze({
   maxDimension: 2400,
   jpegQuality: 0.85,
   maxOriginalFileSize: 20 * 1024 * 1024,
-  developmentMode: true,
+  developmentMode: false,
   simulatedDelayMs: 550
 });
 
